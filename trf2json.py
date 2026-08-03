@@ -220,7 +220,7 @@ class trf2json(chessjson.chessjson):
             if tournament["teamSize"] == 0 and len(tournament["gameList"]) > 0:
                 if len(tournament["matchList"]) == 0:
                     self.put_status(401, "Error in trf-file, Minning 362 record for team tournament")
-     
+                    return
                 tournament["teamSize"] = round(len(tournament["gameList"]) / len(tournament["matchList"]))
         else:
             self.prepare_player_section(tournament)
