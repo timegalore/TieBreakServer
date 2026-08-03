@@ -9,57 +9,35 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 Created on Mon Aug  7 16:48:53 2023
 @author: Otto Milvang, sjakk@milvang.no
 """
-import argparse
-import json
-import io
 import sys
-import datetime
-import codecs
-import helpers
-from commonmain import commonmain
-from convert2jch import convert2jch
+
+from convert import convert2jch
+from pairingchecker import pairingchecker
 from tiebreakchecker import tiebreakchecker
-from chessjson import chessjson
 
 # ==============================
 
 
-class main(commonmain):
+def main(argv=None):
+    argv = list(sys.argv[1:] if argv is None else argv)
+    program = "help"
+    if argv and not argv[0].startswith("-"):
+        program = argv.pop(0)
+        sys.argv = [sys.argv[0]] + argv
 
-    def __init__(self):
-        super().__init__()
-        self.origin = "convert2jch ver. 1.03"
-        self.eventno = 0
-
-    # read_command_line
-    #   options:
-    #   -i = input-file
-    #   -o = output-file
-    #   -f = file-format
-    #   -e = event-number
-    #   -n = number-of-rounds
-    #   -g = game-score
-    #   -m = match-score
-    #   -v = verbose and debug
-
-    def read_command_line(self):
-        parser.add_argument("-@", "--program", required=False, default="help", help="Program to run")
-        self.read_common_command_line(False)
+    if program in ("help", "-h", "--help"):
+        print("xxxmain <program> [options]")
+        print("  programs: convert | tiebreak | pairing | help")
+        return 0
+    if program == "tiebreak":
+        return tiebreakchecker().common_main()
+    if program == "convert":
+        return convert2jch().common_main()
+    if program == "pairing":
+        return pairingchecker().common_main()
+    print("Unknown program:", program, file=sys.stderr)
+    return 2
 
 
-# run program
-mainprog = main()
-params = mainprog.read_command_line()
-prog = params["program"]
-match (program):
-    case "help":
-        print("Help")
-        code = 0
-    case "tiebreak":
-        tbc = tiebreakchecker()
-        code = tbc.common_checker()
-    case "convert":
-        jch = convert2jch()
-        code = jch.common_checker()
-
-sys.exit(code)
+if __name__ == "__main__":
+    sys.exit(main())
