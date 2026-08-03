@@ -92,6 +92,40 @@ class chessserver(commonmain):
         self.origin = "chessserver ver. " + version.version()["version"]
         self.tournamentno = 0
 
+    # Client-supplied path fields are ignored in server mode to prevent
+    # arbitrary host file read/write. Only in-memory payloads are accepted.
+    SERVER_ALLOWED_KEYS = {
+        "service",
+        "input_format",
+        "input_filetype",
+        "input_filename",
+        "encoding",
+        "tournament_number",
+        "current_round",
+        "number_of_rounds",
+        "delimiter",
+        "decimal_point",
+        "check",
+        "experimental",
+        "verbose",
+        "tiebreak",
+        "pre-determined",
+        "swiss",
+        "unrated",
+        "pairing",
+        "method",
+        "top_color",
+        "maxmeets",
+        "unpaired",
+        "analysis",
+        "rank",
+        "game_score",
+        "match_score",
+        "base64",
+        "jch",
+        "data",
+    }
+
     def read_command_line(self):
         # form = cgi.FieldStorage()
         # helpers.json_output('c:\\temp\\t.txt', form)
@@ -103,7 +137,7 @@ class chessserver(commonmain):
         # helpers.json_output('c:\\temp\\t2.txt', command)
         self.params = {
             "service": "",
-            "input_file": "@",
+            "input_file": "-",
             "output_file": "-",
             "output_format": "JSON",
             "encoding": "ascii",
@@ -115,9 +149,22 @@ class chessserver(commonmain):
             "verbose": 0,
         }
 
-        self.params.update(command)
+        for key, value in command.items():
+            if key in self.SERVER_ALLOWED_KEYS:
+                self.params[key] = value
+        # Never honor client path fields; always write JSON to stdout.
+        self.params["input_file"] = "-"
+        self.params["output_file"] = "-"
         if "input_format" not in self.params:
-            self.params["input_format"] = helpers.getFileFormat(command["input_file"])
+            filetype = command.get("input_filetype") or command.get("input_format")
+            if filetype:
+                self.params["input_format"] = filetype
+            elif "input_filename" in command:
+                self.params["input_format"] = helpers.getFileFormat(command["input_filename"])
+            else:
+                self.params["input_format"] = "TRF"
+        if "base64" not in self.params and "jch" not in self.params and "data" not in self.params:
+            raise ValueError("Server requests require an in-memory payload (base64, jch, or data)")
         self.baseclass = self.methods.get(self.params["service"], convert2jch)()
         self.baseclass.params = self.params
         self.baseclass.resultjson["options"] = self.params
