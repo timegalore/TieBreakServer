@@ -1378,7 +1378,8 @@ class tiebreak:
 
     def compute_acc(self, tb, cmps, rounds):
         (scorename, points, scoretype, prefix) = self.get_scoreinfo(tb, True)
-        if prefix + "acc" in cmps[1]["tbval"]:
+        sample = next(iter(cmps.values()), None)
+        if sample is None or prefix + "acc" in sample["tbval"]:
             return "acc"
 
         for startno, cmp in cmps.items():
