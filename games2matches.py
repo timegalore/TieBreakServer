@@ -155,9 +155,8 @@ class games2matches():
     def add_byes(self):
         for bye in self.byelist:
             key = str(bye["round"]) + "-" + str(bye["competitor"]) + "-0"
-            wres = bye["wResult"] if "wResult" in bye else "Z"
-            byetrans = {"Z": "Z", "H": "D", "F": "W", "P": "P"  }
-            wres = byetrans[bye["type"]]
+            byetrans = {"Z": "Z", "H": "D", "F": "W", "P": "P"}
+            wres = byetrans.get(bye.get("type"), bye.get("wResult", "Z"))
             if key not in self.byes:
                 self.matchid += 1
                 # gamescore = self.scores.get_score(tournament, "match", bye["type"] + "G")
@@ -171,7 +170,7 @@ class games2matches():
             self.byes[key].update({
                 "white": bye["competitor"], 
                 "black": 0, 
-                "played": bye["type"] == "P", 
+                "played": bye.get("type") == "P", 
                 "wResult": wres,
                 })
 
