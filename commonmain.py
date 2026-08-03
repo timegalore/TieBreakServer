@@ -231,6 +231,7 @@ class commonmain:
                     if decimal_point and decimal_point.upper() in ["C", "P"]:
                         decimal_point = tr[decimal_point.upper()]
                     if printcheckstatus:
+                        check = result.get("check", "") if isinstance(result, dict) else ""
                         f.write(str(code) + (delimiter + str(check) if len(delimiter) > 0 else "") + "\n")
                     if (code == 0 or code == 1 or code == 2) and len(delimiter) > 0:
                         self.write_text_file(f, result, delimiter, decimal_point)
