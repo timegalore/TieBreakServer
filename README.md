@@ -1,92 +1,131 @@
 # TieBreakServer
-## 🚀 Install Tie-Break Server
 
+Chess tournament tools: Swiss/Berger pairing, tie-break calculation, TRF/JSON/TS I/O, and a stdin/stdout JSON service.
 
-- **Downlaod project**
+Software version: **1.9.57** (see `version.py`). Behaviour is documented in [`docs/GacruxSoftware.pdf`](docs/GacruxSoftware.pdf) (Ver. 1.9). Regenerate that PDF with `python docs/build_gacrux_spec.py`.
 
-- **Install python 3, min version 3.8**<br>
-3.8 becase this is the last python distribution that runs on Win7
+## Install
 
-- **Install dependencies** - See `requirements.txt`
+- Download / clone this project
+- Python **3.8+** (3.8 is the last version that runs on Windows 7)
+- Install dependencies: see `requirements.txt`
 
-- **python pairingchecker.py**
-- **python tiebreakchecker.py**
-- **python tournamentgenerator.py**
+Main entry points:
+
+- `python pairingchecker.py`
+- `python tiebreakchecker.py`
+- `python tournamentgenerator.py`
+- `python chessserver.py` (stdin/stdout service)
 
 ## chessserver.py deployment
 
 `chessserver.py` is a local stdin/stdout JSON helper (CGI-style). It has **no authentication**. Do not expose it directly on a network; put it behind a reverse proxy or application that enforces auth, size limits, and an allowlisted request schema. Prefer in-memory payloads (`base64` / `jch` / `data`) over host file paths.
 
-## 🦋 Common command line parameters
-- **-i \<file\>** or **--input-file \<file\>**  - Tournament file
-- **-o \<file\>** or **--output-file \<file\>** - Output file, use *-* for stdout
-- **-f \<fileformat\>** or **--input-format \<fileformat\>** - TRF for <A HREF="https://www.fide.com/FIDE/handbook/C04Annex2_TRF16.pdf">FIDE TRF-16/TRF-25</A>, JCH for Chess-JSON, TS for Tournament Service files
-- **-b** or **--encoding** - character encoding <A HREF="https://docs.python.org/3/library/codecs.html#standard-encodings"> (ascii, utf-8, latin-1, ...)</A>
-- **-e \<number\>** or **--tournament-number \<number\>** - In files with multiple event, tournaments are numbered 1,2,3, ... use 0 for passthrough
-- **-c** or **--check** - Check tie-break calculation
-- **-n \<number\>** or **--current-round \<number\>** - Current round for tie-break calculation (overrides file value)
-- **-d \<delimiter\>** or **--delimiter  \<delimiter\>** - Predefined delimiters @=Check-status B=blank, T=tab, S=Semicolon, C=comma, default is JSON output
+Request body shape: `{"command": { ...options... }}`. See the Gacrux spec for the full allowlist.
 
-## 🦋 Pairingchecker
+## Common command-line parameters
 
-### 👷 Command line parameters
+Used by pairingchecker, tiebreakchecker, and tournamentgenerator:
 
-- **-a** or **--analyze** - Analyze pairing
-- **-p** or **--pairing** - Do pairing
-- **-m \<method\>** or **--method \<method\>** - dutch (| berger not implemented)
-- **-t \<w | b\>** or **--top-color \<w | b\>** - Color on top board")
-- **-u \<list\>** or **--unpaired \<list\>** - list of competiters that shall not be paired for next round
-- **-x \<list\>** or **--experimental \<list\>** - list of kewords, "weighted" - use weighted
+| Option | Description |
+|--------|-------------|
+| `-i`, `--input-file <file>` | Input path; `-` = stdin (default) |
+| `-o`, `--output-file <file>` | Output path; `-` = stdout (default) |
+| `-f`, `--input-format <fmt>` | `JSON`, `TRF`, or `TS`. Default: **TRF**. (`JCH` is not a valid `-f` value; use `JSON`. Extensions `.jch`/`.json` map to JSON via helpers when sniffing filenames.) |
+| `-F`, `--output-format <fmt>` | `JSON` (default), `TRF`, or `TXT`. If `-d` is set, text output is used regardless of `-F`. |
+| `-b`, `--encoding <enc>` | Character encoding ([Python codecs](https://docs.python.org/3/library/codecs.html#standard-encodings)). If omitted: JSON→utf-8, TRF→latin1, TS→ascii. |
+| `-e`, `--tournament-number <n>` | Tournament index in multi-event files (1-based). `0` = passthrough / all where supported. Default: `1`. |
+| `-n`, `--current-round <n>` | Round override (`-1` = program/file default). |
+| `-N`, `--number-of-rounds <n>` | Overrides tournament round count when &gt; 0. |
+| `-G`, `--game-score <key:val …>` | Override game point system. |
+| `-M`, `--match-score <key:val …>` | Override match point system. |
+| `-c`, `--check` | Check mode (program-specific). |
+| `-r`, `--rank` | Sort text output in rank order (tiebreakchecker). |
+| `-d`, `--delimiter <text>` | Force text output. `T`=tab, `B`=blank, `S`=semicolon, `C`=comma, `@`=status code line, or literal text. Default without `-d`: JSON. |
+| `-D`, `--decimal-point <text>` | Decimal mark in text: `P`=point, `C`=comma, or literal. |
+| `-x`, `--experimental <list>` | Experimental keywords (e.g. `weighted`). |
+| `-v`, `--verbose` | Progress / debug (repeatable). |
+| `-V`, `--version` | Print version and exit. |
 
+TRF input follows the FIDE tournament report format (see current FIDE TRF documentation).
 
-### 👷 Examples
+## Pairingchecker
 
-- python pairingchecker.py -i \<infile\> -o \<outfile\> -p -dT <br>
-Pair the next round of the tournament 
-- python pairingchecker.py -i \<infile\> -c -dT <br>
-Check all rounds of the inputfile for correct pairing, output to terminal
-- python pairingchecker.py -i \<infile\> -c -a -p -n \<round\> -dT -x weighted<br>
-Check round \<n\> with weighted algorithm and write detailed pairing
+### Options
 
+| Option | Description |
+|--------|-------------|
+| `-p`, `--pairing` | Compute pairing. |
+| `-a`, `--analysis` | Analyse existing pairing. |
+| `-c`, `--check` | Compare computed pairing to the file. |
+| `-m`, `--method <name>` | `dutch` or `berger` (also `dutch-mp` / `dutch-gp` for primary score). Default falls back to tournament / dutch. |
+| `-t`, `--top-color <w\|b>` | Colour for top competitor in round 1. |
+| `-u`, `--unpaired <cid …>` | Competitors not paired for this run. |
+| `-K`, `--maxmeets <n>` | Max meetings between the same pair (effective minimum 1). |
+| `-T`, `--exchange <a-b …>` | Test mode: rewrite pairs then re-analyse (use with `-c -a -p -n`). |
 
-## 🦋 Tiebreakchecker
+Round defaults when `-n` is omitted: `-p` → next round; `-a` → last paired; `-c` → all played rounds.
 
-### 👷 Command line parameters
+### Examples
 
-- **-t \<list\>** or **--tie-break \<list\>** - List of Rank order specifiers, default read from tournament file
-- **-p** or **--pre-determined** - Use rules as tournament has pre-defined pairing
-- **-s** or **--swiss** - Use rules as tournament is a swiss tournament
-- **-r** or **--rank** - Print result in rank order
-- **-u \<number\>** or **--unrated \<number\>** - Set rating for unrated players 
+```text
+python pairingchecker.py -i infile.trf -o outfile.json -p
+python pairingchecker.py -i infile.trf -c -dT
+python pairingchecker.py -i infile.trf -c -a -p -n 3 -dT -x weighted
+```
 
-### 👷 Rank order specifiers
-The Rank order specifiers has the form
-**TB:PS/Mn-optlist**
-- **TB** - required, TieBreak name
-- **:PS** - Point system name for team competitions, <br>MP=match points(default), <br>GP=game points
-- **#Mn** - Modifier<br>C=cut, <br>M=medial, <br>L=limit, <br>n=number
-- **-optlist** -<br>
-<A HREF="https://fide-tec.gacrux.no:9001/tbs/tiebreaklist.html">Open  full TB-list</A>
+## Tiebreakchecker
 
-### 👷 Examples
+### Options
 
-- python tiebreakchecker.py -i \<infile\> -o \<outfile\> -c -dT -t PTS GH:GP/C1 DE/P<br>
-Print tiebreak values for the given tiebreaks
+| Option | Description |
+|--------|-------------|
+| `-t`, `--tiebreak <list>` | Rank-order specifiers. If empty and the tournament has `rankOrder`, that list is used. |
+| `-p`, `--pre-determined` | Pre-determined (round-robin) unplayed-game rules. |
+| `-s`, `--swiss` | Swiss unplayed-game rules. |
+| `-r`, `--rank` | Print rows in rank order. |
+| `-u`, `--unrated <rating>` | Rating substituted for unrated players. |
 
-## 🦋 Tournamentgenerator
+### Rank-order syntax
 
-### 👷 Command line parameters
+`TB:PS/Mn/opt` — for example `PTS`, `BH/C1`, `DE/P`, `BH:GP/C1`.
 
-- **-g \<number\>** or **--generate \<number\>** - Generate \<number\> tournaments 
-- **-p \<number\>** or **--players \<number\>** - Number of players in the tournament
-- **-n \<number\>** or **--number-of-rounds \<number\>** - Number of rounds
-- **-t \<w | b\>** or **--top-color \<w | b\>** - Color on top board")
-- **-r \<args\>** or **--rating \<list\>** - List of 3 numbers, \<higest rating\> \<step rating\> \<sigma\>
-- **-s \<args\>** or **--statistics \<list\>** - List of 3 numbers,  \<rate zpb\> \<rate hpb\>  \<rate forfeited\> 
-- **-x \<list\>** or **--experimental \<list\>** - list of kewords, "weighted" - use weighted
+- **TB** — tie-break name (required)
+- **:PS** — team score selector: `:MP` or `:GP` (ESB also `:MM` / `:MG` / `:GM` / `:GG`)
+- **/Mn** — modifiers such as `/C1`, `/M1`, `/L+2`, `/U1400`, `/V2026`, `/P`, `/F`, `/R`
+- Full catalogue: [tie-break list](https://fide-tec.gacrux.no:9001/tbs/tiebreaklist.html) and `docs/GacruxSoftware.pdf`
 
-### 👷 Examples
+### Examples
 
- - python tournamentgenerator.py -n 9 -x weighted -p 15 -r 2200 10 50.0 -s 0.02 0.10 0.04 -o C:/temp/t_n9_p15_d10_s50/T%d.trf -g 10000<br>
- This will create directory C:/temp/t_n9_p15_d10_s50 and generate 10000 tournamen numbered T0000.trf to T9999.trf<br>
- Top color will alternate unless -t flag say otherwise  
+```text
+python tiebreakchecker.py -i infile.trf -o outfile.json -t PTS DE BH BH/C1 WON
+python tiebreakchecker.py -i infile.trf -c -dT -t PTS DE BH/C1 WON
+```
+
+## Tournamentgenerator
+
+Generates synthetic TRF tournaments for testing (uses the same pairing engines).
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `-g`, `--generate …` | Count, or `start count`, or `start count step`. Default: `0 1000`. |
+| `-o`, `--output-file` | Output path; `%d` → zero-padded tournament number. |
+| `-p`, `--players <n>` | Number of competitors. Default: `40`. |
+| `-T`, `--members <n>` | Players per team. Default: `1`. |
+| `-m`, `--method <name>` | `dutch` or `berger`. Default: `dutch`. |
+| `-n` / `-N` | Number of rounds (via common options). |
+| `-t`, `--top-color <w\|b>` | Accepted; generator currently alternates by file number. |
+| `-R`, `--rating [top step sigma]` | Rating model. |
+| `-S`, `--statistics [zpb hpb forfeited]` | Bye / forfeit rates. Default: `0.01 0.05 0.02`. |
+| `-a`, `--acceleration` | Baku acceleration. |
+| `-K`, `--maxmeets <n>` | Max meetings. |
+
+### Example
+
+```text
+python tournamentgenerator.py -n 9 -x weighted -p 15 -R 2200 10 50.0 -S 0.02 0.10 0.04 -o C:/temp/t_n9_p15_d10_s50/T%d.trf -g 10000
+```
+
+Creates `C:/temp/t_n9_p15_d10_s50` and writes `T0000.trf` … `T9999.trf`.
