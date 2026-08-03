@@ -9,13 +9,13 @@ import decimal
 import json
 import sys
 import decimal
-from enum import Enum, EnumType
+from enum import Enum, EnumMeta
 import qdefs
 
 
 class DecimalEncoder(json.JSONEncoder):
     def default(self, o):
-        if isinstance(o, EnumType): 
+        if isinstance(o, EnumMeta): 
             return [str(q.name) for q in o]        
         if isinstance(o, decimal.Decimal):
             return str(o)
