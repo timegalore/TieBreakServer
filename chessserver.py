@@ -125,13 +125,17 @@ class chessserver(commonmain):
         "jch",
         "data",
     }
+    MAX_REQUEST_BYTES = 10 * 1024 * 1024
+    MAX_PAYLOAD_BYTES = 10 * 1024 * 1024
 
     def read_command_line(self):
         # form = cgi.FieldStorage()
         # helpers.json_output('c:\\temp\\t.txt', form)
         charset = "utf-8"
-        sys.stdin.reconfigure(encoding=charset)
-        data = sys.stdin.read()
+        raw = sys.stdin.buffer.read(self.MAX_REQUEST_BYTES + 1)
+        if len(raw) > self.MAX_REQUEST_BYTES:
+            raise ValueError("Request exceeds maximum size of %d bytes" % self.MAX_REQUEST_BYTES)
+        data = raw.decode(charset)
         jsondata = json.loads(data)
         command = jsondata["command"]
         # helpers.json_output('c:\\temp\\t2.txt', command)
@@ -165,6 +169,13 @@ class chessserver(commonmain):
                 self.params["input_format"] = "TRF"
         if "base64" not in self.params and "jch" not in self.params and "data" not in self.params:
             raise ValueError("Server requests require an in-memory payload (base64, jch, or data)")
+        for key in ("base64", "jch", "data"):
+            if key in self.params:
+                payload = self.params[key]
+                if isinstance(payload, list):
+                    payload = "".join(payload)
+                if isinstance(payload, str) and len(payload.encode("utf-8")) > self.MAX_PAYLOAD_BYTES:
+                    raise ValueError("Payload exceeds maximum size of %d bytes" % self.MAX_PAYLOAD_BYTES)
         self.baseclass = self.methods.get(self.params["service"], convert2jch)()
         self.baseclass.params = self.params
         self.baseclass.resultjson["options"] = self.params
