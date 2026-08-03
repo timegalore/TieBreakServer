@@ -308,10 +308,8 @@ class pairing_dutch(pairing):
         # thislevel = sum([1 for node in nodes if node["scorelevel"] >= scorelevel])
         cat1 = False
         hamilton = self.hamilton
-        if scorelevel == testlevel:
-            breakpoint()
         if len(edges) == 0:
-            raise  
+            return 0
         if edges[0]["sa"] < scorelevel or edges[0]["sb"] < scorelevel:
             return -1  # There are no pairing for this scorebracket
         if edges[0]["sa"] == 1 and edges[0]["sb"] == 1:
@@ -326,8 +324,6 @@ class pairing_dutch(pairing):
         top_edges = bot_edges = edges
         for level in range(scorelevel, 0, -1):
             # if level == 1 or level <= self.pablevel: return 0
-            if scorelevel == testlevel:
-                breakpoint()
             (top_nodes, top_edges) = self.select_nodes_and_edges(nodes, edges, level, self.levels)
             lhamilton = hamilton[level]
             (shamilton["this_pairs"], shamilton["this_rest"], shamilton["this_hamilton"]) = self.is_complete(
@@ -342,7 +338,7 @@ class pairing_dutch(pairing):
                         return 0  # Remaining can not be paired
                 if rhamilton.get("rem_hamilton", -1) > 0:
                     if len(top_nodes) % 2:
-                        raise
+                        return 0
                     return 1
             tmeet = (
                 shamilton.get("this_hamilton", -1) > 0
@@ -399,8 +395,6 @@ class pairing_dutch(pairing):
             nodeid2 = [node["cid"] for node in S2nodes if node["scorelevel"] >= lim]
             addblob = len(nodeid1) < len(nodeid2)
         new_edges = self.get_modifiededges(nodeid1, nodeid2, edges)
-        if testlevel == scorelevel:
-            breakpoint()
         if addblob:
             blob = 0 if self.pablevel >= scorelevel else self.crosstable.BLOB
             nodeid1.append(blob)
@@ -709,8 +703,7 @@ class pairing_dutch(pairing):
         edge = self.opponents[S1][S2]
         self.get_edge_quality(edge)
         if S1 == 0:
-            raise
-            # breakpoint()
+            return False
         self.free_and_update_colordiff(edge, colordiff)
         return True
 
