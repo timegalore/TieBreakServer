@@ -316,6 +316,8 @@ class tiebreak:
             (cmp["tiebreakScore"][index] is None) ^ rev, \
             cmp["tiebreakScore"][index] * reverse if cmp["tiebreakScore"][index] is not None else 0, \
             cmp["cid"]))
+        if not self.rankorder:
+            return
         rank = 1
         val = self.rankorder[0]["tiebreakScore"][index]
         for i in range(1, len(self.rankorder)):
