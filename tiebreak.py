@@ -1691,7 +1691,7 @@ class tiebreak:
                         sum += value
                         self.addtbval(cmp["tbval"][prefix + tbname], rnd, value)
             val = sum / Decimal(num) if num > 0 else None
-            cmp["tbval"][prefix + tbname]["val"] = val.quantize(Decimal(norm), rounding=ROUND_HALF_UP) if val else val
+            cmp["tbval"][prefix + tbname]["val"] = val.quantize(Decimal(norm), rounding=ROUND_HALF_UP) if val is not None else val
         return tbname
 
     # get_scoreinfo(self, tb, primary)
