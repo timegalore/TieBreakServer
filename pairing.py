@@ -117,10 +117,10 @@ class pairing:
         self.rnd = rnd
         self.numcompetitors = len(tournament["competitors"])
         self.topcolor = self.get_topcolor(tournament, params.get("top_color", ""))
-        self.experimental = params.get("experimental", None)
+        self.experimental = params.get("experimental") or []
         self.verbose = params.get("verbose", None)
         self.nummeets = int((rnd-1) * tournament.get("maxMeets", 1) / tournament["numRounds"]) + 1
-        rank = "experimental" in params and "fakerank" not in params["experimental"] and params.get('rank', False)
+        rank = "experimental" in params and "fakerank" not in self.experimental and params.get('rank', False)
         self.rank = "rnk" if rank else "cid"
         self.rules = "2022-01-01"
         self.optimize = "weighted" not in self.experimental
