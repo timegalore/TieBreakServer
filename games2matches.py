@@ -473,6 +473,8 @@ class games2matches():
     def remaining(self):
         rnd = 0
         board = 0
+        tournament = self.tournament
+        matches = self.matches
 
         for key, tmatch in matches.items():
             if tmatch["round"] != rnd:
@@ -480,7 +482,7 @@ class games2matches():
                 board = 0
             board += 1
             tmatch["board"] = board
-            self.append_result(tournament["matchList"], tmatch)
+            self.parent.append_result(tournament["matchList"], tmatch)
         # json_output('c:/temp/nmatches.json', tournament['matchList'])
         # json_output('c:/temp/ngames.json', tournament['gameList'])
 
