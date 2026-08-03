@@ -20,11 +20,11 @@
 ## 🦋 Common command line parameters
 - **-i \<file\>** or **--input-file \<file\>**  - Tournament file
 - **-o \<file\>** or **--output-file \<file\>** - Output file, use *-* for stdout
-- **-f \<fileformat\>** or **--file-format \<fileformat\>** - TRF for <A HREF="https://www.fide.com/FIDE/handbook/C04Annex2_TRF16.pdf">FIDE TRF-16/TRF-25</A>, JCH for Chess-JSON, TS for Tournament Service files
+- **-f \<fileformat\>** or **--input-format \<fileformat\>** - TRF for <A HREF="https://www.fide.com/FIDE/handbook/C04Annex2_TRF16.pdf">FIDE TRF-16/TRF-25</A>, JCH for Chess-JSON, TS for Tournament Service files
 - **-b** or **--encoding** - character encoding <A HREF="https://docs.python.org/3/library/codecs.html#standard-encodings"> (ascii, utf-8, latin-1, ...)</A>
-- **-e \<number\>** or **--event-number \<number\>** - In files with multiple event, tournaments are numbered 1,2,3, ... use 0 for passthrough
+- **-e \<number\>** or **--tournament-number \<number\>** - In files with multiple event, tournaments are numbered 1,2,3, ... use 0 for passthrough
 - **-c** or **--check** - Check tie-break calculation
-- **-n \<number\>** or **--number-of-rounds \<number\>** - Number of rounds in Tie-break calculation
+- **-n \<number\>** or **--current-round \<number\>** - Current round for tie-break calculation (overrides file value)
 - **-d \<delimiter\>** or **--delimiter  \<delimiter\>** - Predefined delimiters @=Check-status B=blank, T=tab, S=Semicolon, C=comma, default is JSON output
 
 ## 🦋 Pairingchecker
