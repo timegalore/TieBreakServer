@@ -183,8 +183,11 @@ class commonmain:
                         lines = f.read()
                 except:
                     chessfile.put_status(405, "Can't open file: " + self.params["input_file"])
+                    return
 
-
+            if not lines:
+                chessfile.put_status(405, "Empty input")
+                return
             if lines[0] == "\xef" and lines[1] == "\xbb" and lines[2] == "\xbf":
                 lines = lines[3:]
             chessfile.parse_file(lines, self.params["verbose"])
