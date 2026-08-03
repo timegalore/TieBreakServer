@@ -428,7 +428,7 @@ class pairingchecker(commonmain):
             result["pairing"] = pairing
             result["analysis"] = analysis
             result["competitors"] = pcompetitors if len(pcompetitors) >= len(acompetitors) else acompetitors
-            result["level2score"] = pairingengine.crosstable.level2score,
+            result["level2score"] = pairingengine.crosstable.level2score
  
         # chessfile.chessjson["status"]["code"] = 1
         return result
