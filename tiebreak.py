@@ -203,7 +203,9 @@ class tiebreak:
         startdate = tm.get("tournamentInfo", {}).get("startDate", "")
         if len(startdate) != 10:
             startdate = str(datetime.now())[0:10]
-        if startdate < self.TIEBREAK_RULES[2]:
+        if startdate < self.TIEBREAK_RULES[1]:
+            self.rulesversion = 0
+        elif startdate < self.TIEBREAK_RULES[2]:
             self.rulesversion = 1
         
     def zero(self, scorename):
