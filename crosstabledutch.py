@@ -158,7 +158,6 @@ class crosstable_dutch(crosstable):
         if update_maxpsd:
             maxpsd = max([node["scorelevel"] for node in nodes]) - scorelevel
             self.maxpsd = nodes[0]["scorelevel"] - scorelevel
-            if maxpsd != self.maxpsd: breakpoint()
             self.mdp = [0] * self.maxpsd
             for node in nodes:
                 psd = node["scorelevel"] - scorelevel
@@ -471,7 +470,7 @@ class crosstable_dutch(crosstable):
                 for eval in range(len(weight[nval])-1, -1, -1):
                     (w, weight[nval][eval], depth[nval][eval]) = (w*depth[nval][eval], w, len(str(weight[nval][eval])))
             else:
-                raise
+                raise ValueError("Unsupported depth type for quality weight: %r" % (depth[nval],))
         # print("Weights", let[start], self.weight[acc[start]], self.weight[start:stop+1])
         return w
 
@@ -618,7 +617,7 @@ class crosstable_dutch(crosstable):
         elif mode == "BI":
                 weight = c["qcweight"] * self.weight[B0] + c["biweight"]
         else:
-            breakpoint()
+            raise ValueError("Unknown weight mode: %r" % (mode,))
         c["mode"] = mode
         c["levels"] = category
         c["weight"] = weight
