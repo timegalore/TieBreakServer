@@ -503,7 +503,7 @@ class pairing_dutch(pairing):
                         [
                             (a, b)
                             for (a, b) in pairs
-                            if cmp[a]["rfp"] and cmp[a]["rfp"] and cmp[a]["scorelevel"] == scorelevel and cmp[b]["scorelevel"] == scorelevel
+                            if cmp[a]["rfp"] and cmp[b]["rfp"] and cmp[a]["scorelevel"] == scorelevel and cmp[b]["scorelevel"] == scorelevel
                         ]
                     )
                     if paired != numpairs:
