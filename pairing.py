@@ -139,7 +139,7 @@ class pairing:
             return topcolor.lower()
         if defcolor in ["w", "b", "W", "B"]:
             return defcolor.lower()
-        return "w" if random.random() < 0.5 else "b"
+        return "w"
 
     """
     compute_pairing 
