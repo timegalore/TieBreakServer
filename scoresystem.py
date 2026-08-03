@@ -117,7 +117,6 @@ class scoresystem:
 
     def solve_scoresystem_p(self, equations, pab):
         # print(equations)
-        score = {"sum": Decimal("0.0"), "W": 0, "D": 0, "L": 0, "P": 0, "U": 0, "Z": 0, "A": 0}
         # print ('PAB:', pab)
         res = {}
         for loss in [Decimal("0.0"), Decimal("0.5"), Decimal("1.0")]:
@@ -138,6 +137,7 @@ class scoresystem:
                         ok = True
                         # if loss != 0.0 or draw != 0.5 or win != 1.0 or unknown != 'D':
                         #    continue
+                        score = {"sum": Decimal("0.0"), "W": 0, "D": 0, "L": 0, "P": 0, "U": 0, "Z": 0, "A": 0}
                         for result in equations:
                             tsum = 0
                             tsum += result["W"] * win
