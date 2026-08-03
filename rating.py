@@ -81,7 +81,7 @@ def ComputeTournamentPerformanceRating(score, ratingsopp, norm=""):
     if len(tnorm) > 0:
         rfloor = {"GM": 2200, "IM": 2050, "WGM": 2000, "WIM": 1850}
         sortopp = sorted(ratingsopp)
-        ratingsopp = [max(rfloor[norm], sortopp[0])] + sortopp[1:]
+        ratingsopp = [max(rfloor[tnorm], sortopp[0])] + sortopp[1:]
     score100 = int(round(score * 100))
     scr = int(round(score100 / num + 0.000001))
     return ComputeAverageRatingOpponents(ratingsopp) + fidetables.ScoreToDp[scr]
