@@ -55,7 +55,7 @@ TESTFILES = {
     },
     # "teamheld": { "type": "S", "team": True, "input_file" : "team-Example.trf", },
     "elite": {"type": "R", "team": False, "input_file": "elite19-20.trf"},
-    "nccteam22": {"type": "S", "team": False, "input_file": "nmlag2022.trf"},
+    "nccteam22": {"type": "S", "team": True, "input_file": "nmlag2022.trf"},
     #              "input_format" : "TS", 'tournament_number': '1', },
 }
 
@@ -78,7 +78,7 @@ TIEBREAKS = {
     "co-ab": {"team": False, "tiebreak": ["AOB", "AOB/F"]},
     "in-rg": {"team": False, "tiebreak": ["ARO", "ARO/C1", "ARO/C2", "ARO/M1", "ARO/M2", "TPR", "PTP", "APRO", "APPO"]},
     "tm-bc": {"team": True, "tiebreak": ["TBR", "BBE", "BC"]},
-    "tm-de": {"team": True, "tiebreak": ["EDE", "EDE/P"]},
+    "tm-de": {"team": True, "tiebreak": ["EDE", "EDE/P", "EDEC", "EDET", "EDEB", "EDEBT", "EDEBB"]},
     "gg-sb": {"team": True, "tiebreak": ["ESB:GG", "ESB:GG/C1", "ESB:GG/C1/P", "ESB:GG/C2", "ESB:GG/C2/P", "ESB:GG/P"]},
     "gm-sb": {"team": True, "tiebreak": ["ESB:GM", "ESB:GM/C1", "ESB:GM/C1/P", "ESB:GM/C2", "ESB:GM/C2/P", "ESB:GM/P"]},
     "mg-sb": {"team": True, "tiebreak": ["ESB:MG", "ESB:MG/C1", "ESB:MG/C1/P", "ESB:MG/C2", "ESB:MG/C2/P", "ESB:MG/P"]},
