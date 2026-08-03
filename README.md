@@ -13,6 +13,10 @@
 - **python tiebreakchecker.py**
 - **python tournamentgenerator.py**
 
+## chessserver.py deployment
+
+`chessserver.py` is a local stdin/stdout JSON helper (CGI-style). It has **no authentication**. Do not expose it directly on a network; put it behind a reverse proxy or application that enforces auth, size limits, and an allowlisted request schema. Prefer in-memory payloads (`base64` / `jch` / `data`) over host file paths.
+
 ## 🦋 Common command line parameters
 - **-i \<file\>** or **--input-file \<file\>**  - Tournament file
 - **-o \<file\>** or **--output-file \<file\>** - Output file, use *-* for stdout
