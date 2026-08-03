@@ -442,8 +442,8 @@ class pairingchecker(commonmain):
         tm["competitors"] = sorted(tm["competitors"], key=lambda c: c["cid"])
         for cround in roundpairing:
             for key in ["pairs", "current"]:
-                for pair in cround[key]:
-                    pair = (trans[pair[0]], trans[pair[1]])
+                for i, pair in enumerate(cround[key]):
+                    cround[key][i] = (trans[pair[0]], trans[pair[1]])
             for key in ["analysis", "pairing"]:
                 for level in cround[key]:
                     for pair in level["pairs"]:
