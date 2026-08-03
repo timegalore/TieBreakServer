@@ -800,9 +800,9 @@ class tiebreak:
                                 num += 1
                                 sumscore += rst[points]
                                 score = sumscore / num
-                                de["denum"] = 1
+                                # Rematches update the average vs this opponent; denum stays unique-opponent count.
                                 de["deval"] += score
-                                de["delist"][opponent]["cnt"] = 1
+                                de["delist"][opponent]["cnt"] = num
                                 de["delist"][opponent]["score"] = score
                             else:
                                 de["denum"] += 1
