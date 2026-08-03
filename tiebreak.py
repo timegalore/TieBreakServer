@@ -1025,9 +1025,7 @@ class tiebreak:
         return "ks"
 
     def compute_buchholz_sonneborn_berger(self, tb, cmps, rounds):
-        version = self.rulesversion
-        if tb["modifiers"]["ver"]:
-            version = max(self.TIEBREAK_RULES.keys())
+        version = tb["modifiers"].get("ver", self.rulesversion)
         tbname = self.compute_buchholz_sonneborn_berger_ver(tb, cmps, rounds, version)
         return tbname
         
