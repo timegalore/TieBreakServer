@@ -131,6 +131,11 @@ class pairing_berger(pairing):
                 b = b if b <= self.numcompetitors else 0
                 if w == 0:
                     (w, b) = (b, w)
+                # Skip absentees (and their scheduled opponent) rather than seating them.
+                if w > 0 and not self.competitors[w].get("rfp", True):
+                    continue
+                if b > 0 and not self.competitors[b].get("rfp", True):
+                    continue
                 c = self.opponents[w][b]
                 c["w"] = w
                 c["b"] = b
