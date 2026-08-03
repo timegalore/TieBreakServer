@@ -734,13 +734,16 @@ class pairing_dutch(pairing):
             # print("FLT return", False)
             return False
         if scorelevel <= self.pablevel:
-            min_c9 = min([edge["unplayed"] for edge in edges if edge["ca"] == 0 and edge["canmeet"]])
+            bye_edges = [edge["unplayed"] for edge in edges if edge["ca"] == 0 and edge["canmeet"]]
+            if not bye_edges:
+                return False
+            min_c9 = min(bye_edges)
         for rest in restnodes:
             if scorelevel <= self.pablevel:
                 redge = self.opponents[rest][0]
                 if redge["canmeet"]:
                     if redge["unplayed"] != min_c9:
-                        return
+                        return False
                     mod_nodes = [node for node in nodes if node["cid"] != rest and node["cid"] != 0]
                     mod_nodes = [node for node in mod_nodes if node["cid"] not in S1 and node["cid"] not in permutations[: len(S1)]]
                     mod_edges = self.get_edges(mod_nodes, edges)
@@ -761,6 +764,7 @@ class pairing_dutch(pairing):
                             return True
                 # print("RES return", False)
                 return False
+        return False
 
 
     def pair_weighted_round(self, bracket, nodes, edges, pairingmode, numpairs, category):
