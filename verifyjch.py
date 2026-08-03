@@ -82,7 +82,7 @@ def read_command_line():
     )
     parser.add_argument(
         "-f",
-        "--file-format",
+        "--input-format",
         required=False,
         # default='TS',
         default="TRF",
@@ -196,7 +196,6 @@ def read_input_file(params):
 
 
 def write_output_file(params, chessfile, tb):
-    return
     if params["output_file"] == "-":
         f = sys.stdout
     else:
