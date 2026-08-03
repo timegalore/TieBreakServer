@@ -300,13 +300,17 @@ class commonmain:
         self.tournamentno = helpers.parse_int(self.params["tournament_number"])
         if self.tournamentno < 0 or self.tournamentno > len(self.chessfile.chessjson["event"]["tournaments"]):
                 raise
-        for score in ["game", "match"]:
-            if score + "_score" in params and params[score + "_score"] is not None:
-                for arg in params[score + "_score"]:
-                    self.chessfile.parse_score_system(score, arg)
-
         if self.tournamentno > 0:
             tournament = self.chessfile.get_tournament(self.tournamentno)
+            for score in ["game", "match"]:
+                key = score + "_score"
+                if key in params and params[key] is not None:
+                    if isinstance(params[key], dict):
+                        tournament.setdefault("scoreSystem", {}).setdefault(score, {}).update(params[key])
+                    else:
+                        for arg in params[key]:
+                            self.chessfile.parse_score_system(score, arg)
+
             methodlist = params["methodlist"] = [item for sublist in [ s.lower().split("-") for s in params.get("method", [""])] for item in sublist]
             if len(methodlist) > 0:
                 tournament["pairingSystem"] = methodlist

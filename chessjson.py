@@ -117,7 +117,7 @@ class chessjson:
                 return tournament
         return None
 
-    def get_scoresystemxx(self, scoreLists, name):
+    def get_scoresystem(self, scoreLists, name):
         for scoreList in scoreLists:
             if scoreList["listName"] == name:
                 return scoreList["scoreSystem"]
@@ -126,6 +126,8 @@ class chessjson:
         return newlist["scoreSystem"]
 
     def parse_score_system(self, name, txt):
+        if "scoreLists" not in self.chessjson["event"]:
+            self.chessjson["event"]["scoreLists"] = []
         scoresystem = self.get_scoresystem(self.chessjson["event"]["scoreLists"], name)
         try:
             for param in txt.split(","):
