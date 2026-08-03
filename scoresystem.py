@@ -280,8 +280,9 @@ class scoresystem:
             return "W"
         if points == score.get("D", helpers.parse_float("0.5")):
             return "D"
-        if points == score.get("Z", helpers.parse_float("0.0")):
-            return "Z"
+        # Prefer L over Z when both map to the same points (commonly 0.0).
         if points == score.get("L", helpers.parse_float("0.0")):
             return "L"
+        if points == score.get("Z", helpers.parse_float("0.0")):
+            return "Z"
         return "Z"
