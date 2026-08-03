@@ -362,7 +362,7 @@ class tiebreak:
                 }
             cmps[competitor["cid"]] = cmp
         for rst in tournament[scorename + "List"]:
-            if rst["round"] <= self.currentround or True:
+            if rst["round"] <= self.currentround:
                 self.prepare_result(cmps, rst, self.matchscore)
                 if self.isteam:
                     self.prepare_teamgames(cmps, rst, self.scoresystem)
