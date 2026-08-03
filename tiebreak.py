@@ -163,6 +163,7 @@ class tiebreak:
         self.primaryscore = None  # use default
         self.accelerated = tournament["accelerated"] if "accelerated" in tournament else None
         self.rating = {"W": Decimal("1.0"), "D": Decimal("0.5"), "L": "Z", "Z": Decimal("0.0"), "A": "Z", "U": "Z"}
+        self.reverse = {"W": "L", "D": "D", "L": "W", "Z": "W", "A": "A", "U": "U"}
 
         if self.isteam:
             self.scoresystem = tournament["scoreSystem"]
