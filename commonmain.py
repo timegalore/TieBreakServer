@@ -119,7 +119,7 @@ class commonmain:
         if strict:
             self.params = params = vars(parser.parse_args())
         else:
-            self.params = params = vars(parser.parse_known_args())
+            self.params = params = vars(parser.parse_known_args()[0])
         # print(params)
         self.resultjson["options"] = self.params
 
