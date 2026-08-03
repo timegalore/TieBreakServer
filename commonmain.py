@@ -170,6 +170,13 @@ class commonmain:
             if "base64" in self.params:
                 base64code = base64.b64decode(self.params["base64"])
                 lines = base64code.decode(charset)
+            elif "data" in self.params:
+                # Documented chessserver payload: list of base64-encoded lines (or one string).
+                data = self.params["data"]
+                if isinstance(data, list):
+                    data = "".join(data)
+                base64code = base64.b64decode(data)
+                lines = base64code.decode(charset)
             elif "jch" in self.params:
                 lines = self.params["jch"]
             elif self.params["input_file"] == "-":
