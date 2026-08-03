@@ -958,10 +958,13 @@ class tiebreak:
                         games = rst["games"] if "games" in rst else []
                         tscore = Decimal("0.0")
                         for game in games:
-                            tscore += weights[game["board"]-1] * game["points"]
+                            board = game.get("board", 0)
+                            if board < 1 or board > len(weights):
+                                continue
+                            tscore += weights[board - 1] * game["points"]
                         rst["tpoints"] = tscore
                 # breakpoint()
-                self.compute_basic_direct_encounter(tb, cmps, rounds, subro, loopcount, "tpoints", scorename, scoretype, prefix)
+                changes += self.compute_basic_direct_encounter(tb, cmps, rounds, subro, loopcount, "tpoints", scorename, scoretype, prefix)
 
         
         tb["ede"]["changes"] += changes
