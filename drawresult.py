@@ -18,7 +18,7 @@ class drawresult:
         self.team = 1
 
     def set_seed(self, seed):
-        random.seed(seed if seed else 4711)
+        self._rng = random.Random(seed if seed else 4711)
     
     def prob(self, rw, rb): 
         # rw = Rating white player 
@@ -61,7 +61,7 @@ class drawresult:
     
     def result(self, rw, rb):
         res = self.prob(rw,rb) if self.team <= 1 else self.teamprob(rw,rb)
-        rand = random.random() * (1.0 + self.forfeited)
+        rand = self._rng.random() * (1.0 + self.forfeited)
         if rand < res[0]:
             return "W"
         if rand < res[0] + res[1]:
@@ -73,7 +73,7 @@ class drawresult:
         return "-"
 
     def has_bye(self):
-        rand = random.random() 
+        rand = self._rng.random() 
         if rand < self.zpb:
             return "Z"
         if rand < self.zpb + self.hpb:
@@ -96,14 +96,14 @@ class drawresult:
 
         
     def add_sigma(self, rating):
-        return rating + int(round(random.gauss(0.0, self.sigma)))
+        return rating + int(round(self._rng.gauss(0.0, self.sigma)))
 
     def do_shuffle(self, lst):
-        random.shuffle(lst)
+        self._rng.shuffle(lst)
         return lst
     
     def get_random(self):
-        return random.random()
+        return self._rng.random()
    
 # run program
 if __name__ == '__main__':
