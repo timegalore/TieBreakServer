@@ -57,14 +57,23 @@ def parse_date(date):
     if len(dateparts) == 3:
         if len(dateparts[0]) == 4:
             return date.replace(".", "-")
-        if len(dateparts) == 2:
-            return dateparts[2] + "-" + dateparts[1] + "-" + dateparts[0] + " " + datetime[1]
-        return dateparts[2] + "-" + dateparts[1] + "-" + dateparts[0]
+        # DD.MM.YYYY
+        out = dateparts[2] + "-" + dateparts[1] + "-" + dateparts[0]
+        if len(datetime) > 1:
+            out += " " + datetime[1]
+        return out
     dateparts = datetime[0].split("/")
     if len(dateparts) == 3:
         if len(dateparts[0]) == 4:
             return date.replace("/", "-")
-        return "20" + date.replace("/", "-")
+        # DD/MM/YYYY or DD/MM/YY — do not blindly prefix "20" onto a 4-digit year.
+        year = dateparts[2]
+        if len(year) == 2:
+            year = "20" + year
+        out = year + "-" + dateparts[1] + "-" + dateparts[0]
+        if len(datetime) > 1:
+            out += " " + datetime[1]
+        return out
     return date
 
 
