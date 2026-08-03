@@ -427,7 +427,7 @@ class pairing_dutch(pairing):
             for edge in add_edges:
                 node_id = edge["ca"] if edge["ca"] > 0 and edge["ca"] < blob else edge["cb"]
                 if cmp[node_id]["flt"] & (flt.DF1.value + flt.DF2.value) > 0:
-                    new_edge["qc"] = False
+                    edge["qc"] = False
 
             new_edges += add_edges
             if len(add_edges) == 0:
