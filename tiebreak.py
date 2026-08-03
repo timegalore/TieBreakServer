@@ -224,13 +224,17 @@ class tiebreak:
             self.primaryscore = "points"
 
     def get_score(self, slist, result, color):
-        if color[0] + "Result" in result:
-            res = result[color[0] + "Result"]
-        elif result["black"] > 0:
-            res = self.reverse[result[color[0] + "Result"]]
+        key = color[0] + "Result"
+        if key in result:
+            res = result[key]
         else:
-            # print("get_score" ,  slist, result, color, "Null")
-            return Decimal("0.0")
+            other = "b" if color[0].lower() == "w" else "w"
+            other_key = other + "Result"
+            if result.get("black", 0) > 0 and other_key in result:
+                res = self.reverse[result[other_key]]
+            else:
+                # print("get_score" ,  slist, result, color, "Null")
+                return Decimal("0.0")
         while res in slist:
             if res == "L" and result["played"] is False:
                 res = "Z"
@@ -242,12 +246,16 @@ class tiebreak:
         if result["played"]:
             return False
 
-        if color[0] + "Result" in result:
-            res = result[color[0] + "Result"]
-        elif result["black"] > 0:
-            res = self.reverse[result[color[0] + "Result"]]
+        key = color[0] + "Result"
+        if key in result:
+            res = result[key]
         else:
-            return Decimal("0.0")
+            other = "b" if color[0].lower() == "w" else "w"
+            other_key = other + "Result"
+            if result.get("black", 0) > 0 and other_key in result:
+                res = self.reverse[result[other_key]]
+            else:
+                return False
         # if res == 'W' and result['black'] > 0:  // Full point bye is not vur
         if res == "W":
             return False
